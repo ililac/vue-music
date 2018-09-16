@@ -1,8 +1,8 @@
 <template>
-    <div class="progress-bar" ref="progressBar">
+    <div class="progress-bar" ref="progressBar" @click="progressClick">
         <div class="bar-inner">
             <div class="progress" ref="progress"></div>
-            <div class="progress-btn-wrapper" ref="progressBtn" @click="progressClick" @touchstart.prevent="progressTouchStart" @touchmove.prevent="progressTouchMove" @touchend="progressTouchEnd">
+            <div class="progress-btn-wrapper" ref="progressBtn" @touchstart.prevent="progressTouchStart" @touchmove.prevent="progressTouchMove" @touchend="progressTouchEnd">
                 <div class="progress-btn"></div>
             </div>
         </div>
@@ -63,7 +63,10 @@ export default {
             this.$emit('percentChange', percent)
         },
         progressClick(e) {
-            this._offset(e.offsetX)
+            const rect = this.$refs.progressBar.getBoundingClientRect()
+            const offsetWidth = e.pageX - rect.left
+            this._offset(offsetWidth)
+            // this._offset(e.offsetX)
             this._triggerPersent()
         }
     }
