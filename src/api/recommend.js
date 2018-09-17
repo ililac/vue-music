@@ -35,3 +35,24 @@ export function getDiscList() {
     return Promise.resolve(res.data)
   })
 }
+// 获取歌单的歌曲列表
+export function getSonglist(disstid) {
+  const url = '/api/list'
+  const data = Object.assign({}, commonParams, {
+    disstid,
+    type: 1,
+    json: 1,
+    utf8: 1,
+    onlysong: 0,
+    notice: 0,
+    platform: 'yqq',
+    g_tk: 2125350497,
+    needNewCode: 0,
+    format: 'json'
+  })
+  return axios.get(url, {
+    params: data
+  }).then((res) => {
+    return Promise.resolve(res.data)
+  })
+}

@@ -179,8 +179,7 @@ export default {
                 this.currentLineNum = 0
             })
         },
-        handleLyric({ line, txt }) {
-            let lineNum = line
+        handleLyric({ lineNum, txt }) {
             this.currentLineNum = lineNum
             if (lineNum > 5) {
                 let lineEl = this.$refs.lyricLine[lineNum - 5]

@@ -89,6 +89,28 @@ const devWebpackConfig = merge(baseWebpackConfig, {
           }).catch((e) => {
             console.log(e)
           })
+        }),
+        app.get('/api/list', function (req, res) {
+          const url = 'https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg'
+          axios.get(url, {
+            headers: {
+              referer: 'https://c.y.qq.com/',
+              host: 'c.y.qq.com'
+            },
+            params: req.query
+          }).then((response) => {
+            var ret = response.data
+            if (typeof ret === 'string') {
+              var reg = /^\w+\(({[^()]+})\)/ // jsonpcallback 正则
+              var matches = ret.match(reg)
+              if (matches) {
+                ret = JSON.parse(matches[1])
+              }
+            }
+            res.json(ret) // axios 返回的数据在 response.data，要把数据透传到我们自定义的接口里面 res.json(response.data)
+          }).catch((e) => {
+            console.log(e)
+          })
         })
     }
   },
