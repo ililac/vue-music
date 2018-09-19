@@ -46,17 +46,17 @@
                         <span class="time time-r">{{format(currentSong.duration)}}</span>
                     </div>
                     <div class="operators">
-                        <div class="icon i-left">
-                            <i @click="changeMode" :class="iconMode"></i>
+                        <div class="icon i-left" @click="changeMode">
+                            <i :class="iconMode"></i>
                         </div>
-                        <div class="icon i-left" :class="disableCls">
-                            <i @click="prev" class="icon-prev"></i>
+                        <div class="icon i-left" @click="prev" :class="disableCls">
+                            <i class="icon-prev"></i>
                         </div>
-                        <div class="icon i-center" :class="disableCls">
-                            <i @click="togglePlaying" :class="playIcon"></i>
+                        <div class="icon i-center" @click="togglePlaying" :class="disableCls">
+                            <i :class="playIcon"></i>
                         </div>
-                        <div class="icon i-right" :class="disableCls">
-                            <i @click="next" class="icon-next"></i>
+                        <div class="icon i-right" @click="next" :class="disableCls">
+                            <i class="icon-next"></i>
                         </div>
                         <div class="icon i-right">
                             <i class="icon icon-not-favorite"></i>
@@ -199,9 +199,9 @@ export default {
             if (this.playList.length === 1) {
                 this.loop()
             } else {
-                let index = this.currentIndex + 1
-                if (index === this.playList.length) {
-                    index = 0
+                let index = this.currentIndex - 1
+                if (index === -1) {
+                    index = this.playList.length - 1
                 }
                 this.setCurrentIndex(index)
                 if (!this.playing) {
@@ -217,9 +217,9 @@ export default {
             if (this.playList.length === 1) {
                 this.loop()
             } else {
-                let index = this.currentIndex - 1
-                if (index === -1) {
-                    index = this.playList.length - 1
+                let index = this.currentIndex + 1
+                if (index === this.playList.length) {
+                    index = 0
                 }
                 this.setCurrentIndex(index)
                 if (!this.playing) {

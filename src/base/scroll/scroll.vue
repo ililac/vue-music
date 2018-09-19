@@ -22,6 +22,14 @@ export default {
         listenScroll: { // 是否监听滚动事件
             type: Boolean,
             default: false
+        },
+        pullup: {
+            type: Boolean, // 是否开启上拉刷新
+            default: false
+        },
+        beforeScroll: {
+            type: Boolean,
+            default: false
         }
     },
     mounted() {
@@ -40,6 +48,18 @@ export default {
                 let me = this // 保存vue实例
                 this.scroll.on('scroll', (pos) => {
                     me.$emit('scroll', pos) // $emit 派发scroll事件
+                })
+            }
+            if (this.pullup) {
+                this.scroll.on('scrollEnd', () => {
+                    if (this.scroll.y <= (this.scroll.maxScrollY + 50)) {
+                        this.$emit('scrollToEnd')
+                    }
+                })
+            }
+            if (this.beforeScroll) {
+                this.scroll.on('beforeScrollStart', () => {
+                    this.$emit('beforeScroll')
                 })
             }
         },
