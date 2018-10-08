@@ -13,10 +13,19 @@
                         </li>
                     </ul>
                 </div>
+                <div class="search-history" v-show="searchHistory.length">
+                    <h1 class="title">
+                        <span class="text">搜索历史</span>
+                        <span class="clear" @click="deleteAll">
+                            <i class="icon-clear"></i>
+                        </span>
+                    </h1>
+                    <search-list @select="addQuery" @delete="deleteOne" :searches="searchHistory"></search-list>
+                </div>
             </div>
         </div>
         <div class="search-result" v-show="query ">
-            <suggest :query="query" @listScroll="blurInput"></suggest>
+            <suggest @select="saveSearch" :query="query" @listScroll="blurInput"></suggest>
         </div>
         <router-view></router-view>
     </div>
@@ -27,6 +36,8 @@ import SearchBox from 'base/search-box/search-box'
 import { getHotKey } from 'api/search'
 import { ERR_OK } from 'api/config'
 import Suggest from 'components/suggest/suggest'
+import SearchList from 'base/search-list/search-list'
+import { mapActions, mapGetters } from 'vuex'
 export default {
     data() {
         return {
@@ -37,7 +48,23 @@ export default {
     created() {
         this._getHotKey()
     },
+    computed: {
+        ...mapGetters([
+            'searchHistory'
+        ]
+        )
+    },
     methods: {
+        // 保存搜索结果
+        saveSearch() {
+            this.saveSearchHistory(this.query)
+        },
+        deleteOne(item) {
+            this.deleteSearchHistory(item)
+        },
+        deleteAll() {
+            this.clearSearchHistory()
+        },
         blurInput() {
             // 手机端input失去焦点键盘消失
             this.$refs.searchBox.blur() // 调用子组件的blur方法
@@ -54,11 +81,17 @@ export default {
                     this.hotkey = res.data.hotkey.slice(0, 10)
                 }
             })
-        }
+        },
+        ...mapActions([
+            'saveSearchHistory',
+            'deleteSearchHistory',
+            'clearSearchHistory'
+        ])
     },
     components: {
         SearchBox,
-        Suggest
+        Suggest,
+        SearchList
     }
 }
 </script>

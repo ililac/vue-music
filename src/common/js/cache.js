@@ -1,37 +1,16 @@
 import storage from 'good-storage'
 
 const SEARCH_KEY = '__search__'
-const SEARCH_MAX_LEN = 15
+const SEARCH_MAX_LEN = 15 // 最大存储数空间
 
 const PLAY_KEY = '__play__'
 const PLAY_MAX_LEN = 200
-
 const FAVORITE_KEY = '__favorite__'
 const FAVORITE_MAX_LEN = 200
 
-function insertArray(arr, val, compare, maxLen) {
-  const index = arr.findIndex(compare)
-  if (index === 0) {
-    return
-  }
-  if (index > 0) {
-    arr.splice(index, 1)
-  }
-  arr.unshift(val)
-  if (maxLen && arr.length > maxLen) {
-    arr.pop()
-  }
-}
-
-function deleteFromArray(arr, compare) {
-  const index = arr.findIndex(compare)
-  if (index > -1) {
-    arr.splice(index, 1)
-  }
-}
-
+// 保存搜索结果
 export function saveSearch(query) {
-  let searches = storage.get(SEARCH_KEY, [])
+  let searches = storage.get(SEARCH_KEY, []) // 默认为空数组
   insertArray(searches, query, (item) => {
     return item === query
   }, SEARCH_MAX_LEN)
@@ -39,6 +18,19 @@ export function saveSearch(query) {
   return searches
 }
 
+function insertArray(arr, val, compare, maxLen) {
+  const index = arr.findIndex(compare)
+  if (index === 0) {
+    return
+  }
+  if (index > 0) {
+    arr.splice(index, 1) // 先删除后插入
+  }
+  arr.unshift(val) // 第一个插入
+  if (maxLen && arr.length > maxLen) {
+    arr.pop()
+  }
+}
 export function deleteSearch(query) {
   let searches = storage.get(SEARCH_KEY, [])
   deleteFromArray(searches, (item) => {
@@ -48,11 +40,17 @@ export function deleteSearch(query) {
   return searches
 }
 
+function deleteFromArray(arr, compare) {
+  const index = arr.findIndex(compare)
+  if (index > -1) {
+    arr.splice(index, 1) // 删除
+  }
+}
 export function clearSearch() {
   storage.remove(SEARCH_KEY)
   return []
 }
-
+// 读取本地数据
 export function loadSearch() {
   return storage.get(SEARCH_KEY, [])
 }
@@ -91,4 +89,3 @@ export function deleteFavorite(song) {
 export function loadFavorite() {
   return storage.get(FAVORITE_KEY, [])
 }
-

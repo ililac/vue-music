@@ -71,6 +71,7 @@ export default {
             } else {
                 this.insertSong(item)
             }
+            this.$emit('select') // 派发事件，以便完成搜索历史记录功能
         },
         search() {
             this.hasMore = true
