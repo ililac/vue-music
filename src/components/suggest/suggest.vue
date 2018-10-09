@@ -55,6 +55,9 @@ export default {
         }
     },
     methods: {
+        refresh() { // search组件要刷新本组件的scroll，需要代理
+            this.$refs.suggest.refresh()
+        },
         listScroll() {
             this.$emit('listScroll') // 今天listScroll并派发出去
         },
