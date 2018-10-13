@@ -3,7 +3,7 @@ import storage from 'good-storage'
 const SEARCH_KEY = '__search__'
 const SEARCH_MAX_LEN = 15 // 最大存储数空间
 
-const PLAY_KEY = '__play__'
+const PLAY_KEY = '__play__' // 存储播放的key
 const PLAY_MAX_LEN = 200
 const FAVORITE_KEY = '__favorite__'
 const FAVORITE_MAX_LEN = 200

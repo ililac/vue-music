@@ -4,7 +4,7 @@
             <search-box ref="searchBox" @query="onQueryChange"></search-box>
         </div>
         <div ref="shortcutWrapper" class="shortcut-wrapper" v-show="!query">
-            <scroll class="shortcut" ref="shortcut" :data="shortcut">
+            <scroll :refreshDelay="refreshDelay" class="shortcut" ref="shortcut" :data="shortcut">
                 <div>
                     <div class="hot-key">
                         <h1 class="title">热门搜索</h1>
@@ -40,26 +40,21 @@ import { getHotKey } from 'api/search'
 import { ERR_OK } from 'api/config'
 import Suggest from 'components/suggest/suggest'
 import SearchList from 'base/search-list/search-list'
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions } from 'vuex'
 import Confirm from 'base/confirm/confirm'
 import Scroll from 'base/scroll/scroll'
-import { playlistMixin } from 'common/js/mixin'
+import { playlistMixin, searchMixin } from 'common/js/mixin'
 export default {
-    mixins: [playlistMixin],
+    mixins: [playlistMixin, searchMixin],
     data() {
         return {
-            hotkey: [],
-            query: ''
+            hotkey: []
         }
     },
     created() {
         this._getHotKey()
     },
     computed: {
-        ...mapGetters([
-            'searchHistory'
-        ]
-        ),
         shortcut() {
             return this.hotkey.concat(this.saveSearchHistory)
         }
@@ -82,9 +77,9 @@ export default {
             this.$refs.suggest.refresh()
         },
         // 保存搜索结果
-        saveSearch() {
-            this.saveSearchHistory(this.query)
-        },
+        // saveSearch() {
+        //     this.saveSearchHistory(this.query)
+        // },
         deleteOne(item) {
             this.deleteSearchHistory(item)
         },
@@ -94,16 +89,16 @@ export default {
         showConfirm() {
             this.$refs.confirm.show()
         },
-        blurInput() {
-            // 手机端input失去焦点键盘消失
-            this.$refs.searchBox.blur() // 调用子组件的blur方法
-        },
-        addQuery(query) {
-            this.$refs.searchBox.setQuery(query)
-        },
-        onQueryChange(query) {
-            this.query = query
-        },
+        // blurInput() {
+        //     // 手机端input失去焦点键盘消失
+        //     this.$refs.searchBox.blur() // 调用子组件的blur方法
+        // },
+        // addQuery(query) {
+        //     this.$refs.searchBox.setQuery(query)
+        // },
+        // onQueryChange(query) {
+        //     this.query = query
+        // },
         _getHotKey() {
             getHotKey().then(res => {
                 if (res.code === ERR_OK) {
@@ -112,8 +107,6 @@ export default {
             })
         },
         ...mapActions([
-            'saveSearchHistory',
-            'deleteSearchHistory',
             'clearSearchHistory'
         ])
     },
