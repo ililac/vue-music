@@ -59,7 +59,7 @@
                             <i class="icon-next"></i>
                         </div>
                         <div class="icon i-right">
-                            <i class="icon icon-not-favorite"></i>
+                            <i class="icon" @click="toggleFavorite(currentSong)" :class="getFavoriteIcon(currentSong)"></i>
                         </div>
                     </div>
                 </div>
@@ -85,7 +85,7 @@
             </div>
         </transition>
         <playlist ref="playlist"></playlist>
-        <audio ref="audio" @ended="end" :src="currentSong.url" @canplay="ready" @error="error" @timeupdate="updateTime"></audio>
+        <audio ref="audio" @ended="end" :src="currentSong.url" @play="ready" @error="error" @timeupdate="updateTime"></audio>
     </div>
 </template>
 
@@ -150,10 +150,13 @@ export default {
             }
             if (this.currentLyric) {
                 this.currentLyric.stop()
+                this.currentTime = 0
+                this.playingLyric = ''
+                this.currentLineNum = 0
             }
             this.$nextTick(() => { // 延迟加载
-                this.$refs.audio.play()
-                this.getLyric()
+                this.$refs.audio.play() // 同步
+                this.getLyric() // 异步
             })
         },
         playing(newPlaying) {
@@ -171,8 +174,10 @@ export default {
         // 获取歌词
         getLyric() {
             this.currentSong.getLyric().then((lyric) => {
+                if (this.currentLyric.lyric !== lyric) {
+                    return
+                }
                 this.currentLyric = new Lyric(lyric, this.handleLyric)
-                console.log(this.currentLyric)
                 if (this.playing) {
                     this.currentLyric.play()
                 }
@@ -201,6 +206,7 @@ export default {
             }
             if (this.playList.length === 1) {
                 this.loop()
+                return
             } else {
                 let index = this.currentIndex - 1
                 if (index === -1) {
@@ -219,6 +225,7 @@ export default {
             }
             if (this.playList.length === 1) {
                 this.loop()
+                return
             } else {
                 let index = this.currentIndex + 1
                 if (index === this.playList.length) {
